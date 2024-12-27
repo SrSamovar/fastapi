@@ -19,7 +19,7 @@ app = FastAPI(
 @app.get('/api/v1/advertisements', response_model=GetAdvertisementResponse)
 async def get_advertisements(session: SessionDependency):
     items = await session.execute(select(Advertisement))
-    advertisements = items.scalar().all()
+    advertisements = items.scalars()
     return [adv.dict_ for adv in advertisements]
 
 
@@ -70,6 +70,6 @@ async def get_advertisement_by_query(session: SessionDependency, request: GetAdv
         query = query.where(Advertisement.author.ilike(f'%{request.author}%'))
 
     items = await session.execute(query)
-    advertisements = items.scalars().all()
+    advertisements = items.scalars()
     return [adv.dict_() for adv in advertisements]
 

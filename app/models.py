@@ -12,6 +12,8 @@ POSTGRES_DB = os.getenv('POSTGRES_DB', 'aiohttp')
 POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
 POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
 
+TOKEN_TTL_SEC = int(os.getenv('TOKEN_TTL_SEC', 48 * 60 * 60))
+
 DSN = (f'postgresql+asyncpg://'
        f'{POSTGRES_USER}:{POSTGRES_PASSWORD}@'
        f'{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}')
@@ -39,6 +41,14 @@ class User(Base):
                                                                  lazy='joined',
                                                                  back_populates='user')
     role: Mapped[Role] = mapped_column(String, default='user')
+
+    @property
+    def dict_(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'role': self.role
+        }
 
 
 class Token(Base):
